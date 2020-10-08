@@ -348,3 +348,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Generated css files
+/src/GumihoUI/Gumiho.Components/wwwroot/main.min.css
+/src/GumihoUI/Gumiho.Components/wwwroot/main.css
