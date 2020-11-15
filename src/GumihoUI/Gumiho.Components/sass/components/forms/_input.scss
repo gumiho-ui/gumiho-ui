@@ -1,0 +1,22 @@
+﻿.form-component {
+    display: inline;
+
+    .textBox {
+        margin: $margin-component;
+        padding: 3px;
+        border: 1px solid $color-gray;
+        border-radius: $border-radius-component;
+        outline: 0;
+
+        &:focus {
+            border: 1px solid $color-blue;
+            box-shadow: 0 0 0 1px $color-blue-light;
+        }
+    }
+
+    .form-validation {
+        span {
+            color: $color-red;
+        }
+    }
+}

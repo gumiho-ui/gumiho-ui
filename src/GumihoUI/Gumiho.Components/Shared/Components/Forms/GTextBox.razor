@@ -1,0 +1,28 @@
+﻿@inherits InputBase<string>
+
+<div class="form-component">
+    <input type="text" @bind="@CurrentValue" class="textBox" @bind:event="oninput" @onchange="@OnChange" />
+    <div class="form-validation">
+        @foreach (var message in ValidationMessages)
+        {
+            <span>@message</span>
+        }
+    </div>
+</div>
+
+@code {
+    private IList<string> ValidationMessages = new List<string>();
+
+    void OnChange(ChangeEventArgs e)
+    {
+        EditContext.NotifyFieldChanged(FieldIdentifier);
+        ValidationMessages = EditContext.GetValidationMessages(FieldIdentifier).ToArray();
+    }
+
+    protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out string result, [NotNullWhen(false)] out string? validationErrorMessage)
+    {
+        result = value ?? string.Empty;
+        validationErrorMessage = null;
+        return true;
+    }
+}

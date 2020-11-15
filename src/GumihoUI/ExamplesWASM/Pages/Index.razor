@@ -1,0 +1,27 @@
+﻿@page "/"
+
+<h1>Input</h1>
+
+<EditForm Model="M">
+    <DataAnnotationsValidator />
+    <label>First Name</label>
+    <GTextBox @bind-Value="@M.FirstName"></GTextBox>
+
+    <label>Last Name</label>
+    <GTextBox @bind-Value="@M.LastName"></GTextBox>
+    <input type="submit" value="Submit" />
+</EditForm>
+
+@code {
+    public class DataModel {
+        [StringLength(maximumLength: 5, MinimumLength = 3, ErrorMessage = "Incorrect lenght")]
+        [Required]
+        public string FirstName { get; set; }
+
+        [StringLength(maximumLength: 5, MinimumLength = 3, ErrorMessage = "Incorrect lenght")]
+        [Required]
+        public string LastName { get; set; }
+    }
+
+    public DataModel M { get; set; } = new DataModel();
+}
