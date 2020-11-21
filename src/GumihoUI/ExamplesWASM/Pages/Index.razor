@@ -5,10 +5,10 @@
 <EditForm Model="M">
     <DataAnnotationsValidator />
     <label>First Name</label>
-    <GTextBox @bind-Value="@M.FirstName"></GTextBox>
+    <GTextBox @bind-Value="@M.FirstName" MaxLength="5" Counter="true"></GTextBox>
 
     <label>Last Name</label>
-    <GTextBox @bind-Value="@M.LastName"></GTextBox>
+    <GTextBox @bind-Value="@M.LastName" Validatable="false"></GTextBox>
     <input type="submit" value="Submit" />
 </EditForm>
 

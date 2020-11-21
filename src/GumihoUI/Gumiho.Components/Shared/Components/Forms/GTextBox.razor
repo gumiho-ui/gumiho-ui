@@ -1,16 +1,35 @@
 ﻿@inherits InputBase<string>
 
 <div class="form-component">
-    <input type="text" @bind="@CurrentValue" class="textBox" @bind:event="oninput" @onchange="@OnChange" />
-    <div class="form-validation">
-        @foreach (var message in ValidationMessages)
-        {
-            <span>@message</span>
-        }
+    <div class="form-component-group">
+        <input type="text" @bind="@CurrentValue" class="form-input__textBox"
+               @bind:event="oninput" @onchange="@OnChange"
+               maxlength="@MaxLength" />
+        <div class="form-input__group">
+            <div class="form-input__validation">
+                @if (Validatable)
+                {
+                    @foreach (var message in ValidationMessages)
+                    {
+                        <span>@message</span>
+                    }
+                }
+            </div>
+            <div class="form-input__counter">
+                @if (Counter)
+                {
+                    <span>@(CurrentValue?.Length ?? 0)@(MaxLength.HasValue ? $"/{MaxLength}" : string.Empty)</span>
+                }
+            </div>
+        </div>
     </div>
 </div>
 
 @code {
+    [Parameter] public bool Validatable { get; set; } = true;
+    [Parameter] public bool Counter { get; set; }
+    [Parameter] public int? MaxLength { get; set; }
+
     private IList<string> ValidationMessages = new List<string>();
 
     void OnChange(ChangeEventArgs e)
