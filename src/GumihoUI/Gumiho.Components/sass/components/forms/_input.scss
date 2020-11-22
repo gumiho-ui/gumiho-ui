@@ -1,0 +1,55 @@
+﻿.form-component {
+    display: inline-flex;
+    margin: var(--margin-component);
+
+    .form-component-group {
+
+        .form-input {
+            &__textBox {
+                padding: 3px;
+                border: 1px solid var(--color-gray);
+                border-radius: var(--border-radius-component);
+                outline: 0;
+
+                &:focus {
+                    border: 1px solid var(--color-blue);
+                    box-shadow: 0 0 0 1px var(--color-blue-light);
+                }
+
+                &:hover:not(:disabled) {
+                    border: 1px solid var(--color-gray-dark);
+                }
+
+                &:disabled {
+                    color: var(--color-gray-dark);
+                    background-color: var(--color-gray-light);
+                }
+
+                &::placeholder {
+                    color: var(--color-gray-dark);
+                }
+            }
+
+            &__group {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            &__counter {
+                float: right;
+
+                span {
+                    font-size: .75rem;
+                    color: var(--color-gray-dark);
+                }
+            }
+
+            &__validation {
+                span {
+                    font-size: .75rem;
+                    color: var(--color-red);
+                }
+            }
+        }
+    }
+}
