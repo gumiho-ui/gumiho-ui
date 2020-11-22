@@ -16,9 +16,17 @@
                     box-shadow: 0 0 0 1px var(--color-blue-light);
                 }
 
+                &:hover:not(:disabled) {
+                    border: 1px solid var(--color-gray-dark);
+                }
+
                 &:disabled {
                     color: var(--color-gray-dark);
                     background-color: var(--color-gray-light);
+                }
+
+                &::placeholder {
+                    color: var(--color-gray-dark);
                 }
             }
 

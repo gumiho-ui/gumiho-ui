@@ -5,7 +5,7 @@
 <EditForm Model="M">
     <DataAnnotationsValidator />
     <label>First Name</label>
-    <GTextBox @bind-Value="@M.FirstName" MaxLength="5" Counter="true"></GTextBox>
+    <GTextBox @bind-Value="@M.FirstName" MaxLength="5" Placeholder="First name" Counter="true"></GTextBox>
 
     <label>Middle Name</label>
     <GTextBox @bind-Value="@M.MiddleName" Disabled="true"></GTextBox>
