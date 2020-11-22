@@ -7,8 +7,12 @@
     <label>First Name</label>
     <GTextBox @bind-Value="@M.FirstName" MaxLength="5" Counter="true"></GTextBox>
 
+    <label>Middle Name</label>
+    <GTextBox @bind-Value="@M.MiddleName" Disabled="true"></GTextBox>
+
     <label>Last Name</label>
     <GTextBox @bind-Value="@M.LastName" Validatable="false"></GTextBox>
+
     <input type="submit" value="Submit" />
 </EditForm>
 
@@ -17,6 +21,9 @@
         [StringLength(maximumLength: 5, MinimumLength = 3, ErrorMessage = "Incorrect lenght")]
         [Required]
         public string FirstName { get; set; }
+
+        [StringLength(maximumLength: 10, MinimumLength = 3, ErrorMessage = "Incorrect lenght")]
+        public string MiddleName { get; set; } = "John";
 
         [StringLength(maximumLength: 5, MinimumLength = 3, ErrorMessage = "Incorrect lenght")]
         [Required]
