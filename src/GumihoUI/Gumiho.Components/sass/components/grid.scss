@@ -1,0 +1,17 @@
+﻿.row {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row wrap;
+    border: 1px solid red;
+    margin: 5px;
+
+    @for $i from 1 through 12 {
+        .column-#{$i} {
+            border: 2px solid black;
+            box-sizing: border-box;
+            flex: 0 0 0%;
+            flex-basis: calc((100%/12) * #{$i});
+            margin: 5px;
+        }
+    }
+}

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gumiho.Components", "Gumiho.Components\Gumiho.Components.csproj", "{40DA9A32-10A3-4E2D-A173-C5852EA7CE1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesWASM", "ExamplesWASM\ExamplesWASM.csproj", "{EEB93D84-6345-4987-9DAF-416B977509EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplesWASM", "ExamplesWASM\ExamplesWASM.csproj", "{EEB93D84-6345-4987-9DAF-416B977509EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
