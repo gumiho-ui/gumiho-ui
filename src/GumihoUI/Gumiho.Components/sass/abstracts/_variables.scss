@@ -1,9 +1,17 @@
-﻿:root {
+﻿// ==============================
+// SASS variables
+// ==============================
+$breakpoint-sm: 43rem;
+$breakpoint-md: 62rem;
+$breakpoint-lg: 82rem;
+
+:root {
     // ==============================
-    //
+    // CSS variables
     // ==============================
     --border-radius-component: 3px;
     --margin-component: .55rem;
+    --grid-gutter: .25rem;
     // ==============================
     // Colors
     // ==============================

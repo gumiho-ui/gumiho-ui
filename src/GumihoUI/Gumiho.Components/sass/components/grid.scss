@@ -1,17 +1,38 @@
 ﻿.row {
-    box-sizing: border-box;
-    display: flex;
-    flex-flow: row wrap;
-    border: 1px solid red;
-    margin: 5px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-column-gap: var(--grid-gutter);
+
+    &.fit {
+        grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    }
+
+    .column {
+        padding: var(--grid-gutter);
+    }
 
     @for $i from 1 through 12 {
         .column-#{$i} {
-            border: 2px solid black;
-            box-sizing: border-box;
-            flex: 0 0 0%;
-            flex-basis: calc((100%/12) * #{$i});
-            margin: 5px;
+            grid-column: span #{$i};
+        }
+    }
+
+    @media (min-width: $breakpoint-sm) {
+        @for $i from 1 through 12 {
+            .column-medium-#{$i} {
+                grid-column: span #{$i};
+            }
+        }
+    }
+
+    @media (min-width: $breakpoint-md) {
+        max-width: $breakpoint-md;
+        margin: 0 auto;
+
+        @for $i from 1 through 12 {
+            .column-medium-#{$i} {
+                grid-column: span #{$i};
+            }
         }
     }
 }

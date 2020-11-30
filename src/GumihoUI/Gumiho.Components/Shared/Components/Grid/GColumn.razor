@@ -1,10 +1,14 @@
 ﻿@namespace GumihoUI
 
-<div class="column-@(ColumnsSpan)">
+<div class="column column-@(ColumnSpan) 
+     @(ColumnMediumSpan.HasValue ? $"column-medium-{ColumnMediumSpan.Value}" : string.Empty)
+     @(ColumnLargeSpan.HasValue ? $"column-large-{ColumnLargeSpan.Value}" : string.Empty)">
     @ChildContent
 </div>
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public int ColumnsSpan { get; set; } = 12;
+    [Parameter] public int ColumnSpan { get; set; } = 12;
+    [Parameter] public int? ColumnMediumSpan { get; set; }
+    [Parameter] public int? ColumnLargeSpan { get; set; }
 }
