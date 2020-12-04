@@ -23,8 +23,19 @@
             </GRow>
 
             <GRow>
-                <GColumn ColumnMediumSpan="4">
-                    <GButton>Submit</GButton>
+                <h1>Buttons</h1>
+                <GColumn>
+                    <GButton OnClickCallback="@LeftClick">Blue</GButton>
+                    <GButton OnRigthClickCallback="@RightClick" ButtonColor="@ButtonColors.Red">Red</GButton>
+                    <GButton ButtonColor="@ButtonColors.Orange">Orange</GButton>
+                    <GButton ButtonColor="@ButtonColors.Green">Green</GButton>
+                    <GButton ButtonColor="@ButtonColors.White">White</GButton>
+                    <GButton ButtonColor="@ButtonColors.Gray">Gray</GButton>
+                    <GButton Disabled="true">Disabled</GButton>
+                    <GButton RoundButton="true" ButtonColor="@ButtonColors.White">💜</GButton>
+                </GColumn>
+                <GColumn>
+                    <GButton FullWidth="true">Full width</GButton>
                 </GColumn>
             </GRow>
         </EditForm>
@@ -47,4 +58,14 @@
     }
 
     public DataModel M { get; set; } = new DataModel();
+
+    private void LeftClick(MouseEventArgs e)
+    {
+        Console.WriteLine("click!");
+    }
+
+    private void RightClick(MouseEventArgs e)
+    {
+        Console.WriteLine("right click!");
+    }
 }
