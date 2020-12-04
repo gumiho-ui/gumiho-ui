@@ -21,6 +21,9 @@ jobs:
     
       - name: Publish ExamplesWASM Project
         run: dotnet publish src/GumihoUI/ExamplesWASM/ExamplesWASM.csproj -c Release -o release --nologo /p:EnvironmentName=Development
+        
+      - name: Run WebCompiler
+        run: webcompiler -r src/GumihoUI/Gumiho.Components/sass/main.scss -o src/GumihoUI/Gumiho.Components/wwwroot -z disabled -m disabled
           
       - name: Change base-tag in index.html
         run: sed -i 's/<base href="\/" \/>/<base href="\/gumiho-ui\/" \/>/g' release/wwwroot/index.html
