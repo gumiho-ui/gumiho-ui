@@ -1,9 +1,9 @@
 ﻿// ==============================
 // SASS variables
 // ==============================
-$breakpoint-sm: 43rem;
-$breakpoint-md: 62rem;
-$breakpoint-lg: 82rem;
+$breakpoint-sm: 43rem !default;
+$breakpoint-md: 62rem !default;
+$breakpoint-lg: 82rem !default;
 
 :root {
     // ==============================
