@@ -1,0 +1,44 @@
+name: Blazor WASM Example Page
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-github-page:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup .NET5 SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100
+
+      - name: Install WebCompiler
+        run: dotnet tool install Excubo.WebCompiler --global
+        
+      - name: Run WebCompiler
+        run: webcompiler -r src/GumihoUI/Gumiho.Components/sass/main.scss -o src/GumihoUI/Gumiho.Components/wwwroot -z disabled -m disabled
+        
+      - name: Publish ExamplesWASM Project
+        run: dotnet publish src/GumihoUI/ExamplesWASM/ExamplesWASM.csproj -c Release -o release --nologo /p:EnvironmentName=Development
+          
+      - name: Change base-tag in index.html
+        run: sed -i 's/<base href="\/" \/>/<base href="\/gumiho-ui\/" \/>/g' release/wwwroot/index.html
+        
+      - name: Add .nojekyll file
+        run: touch release/wwwroot/.nojekyll
+        
+      - name: Commit wwwroot to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1.5.1
+        with:
+          target_branch: gh-pages
+          build_dir: release/wwwroot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+
+
