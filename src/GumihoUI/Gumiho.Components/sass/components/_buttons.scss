@@ -4,43 +4,17 @@
     padding: var(--padding-component) calc(var(--padding-component) * 2);
     border-radius: var(--border-radius-component);
 
-    &--blue {
-        background-color: var(--color-blue);
-        border: 1px solid var(--color-blue);
+    $colors: blue, red, orange, green, gray;
 
-        &:focus, &:hover {
-            box-shadow: 0 0 0 1px var(--color-blue-light);
-            background-color: var(--color-blue-light);
-        }
-    }
+    @each $color in $colors {
+        &--#{$color} {
+            background-color: var(--color-#{$color});
+            border: 1px solid var(--color-#{$color});
 
-    &--red {
-        background-color: var(--color-red);
-        border: 1px solid var(--color-red);
-
-        &:focus, &:hover {
-            box-shadow: 0 0 0 1px var(--color-red-light);
-            background-color: var(--color-red-light);
-        }
-    }
-
-    &--orange {
-        background-color: var(--color-orange);
-        border: 1px solid var(--color-orange);
-
-        &:focus, &:hover {
-            box-shadow: 0 0 0 1px var(--color-orange-light);
-            background-color: var(--color-orange-light);
-        }
-    }
-
-    &--green {
-        background-color: var(--color-green);
-        border: 1px solid var(--color-green);
-
-        &:focus, &:hover {
-            box-shadow: 0 0 0 1px var(--color-green-light);
-            background-color: var(--color-green-light);
+            &:focus, &:hover {
+                box-shadow: 0 0 0 1px var(--color-#{$color}-light);
+                background-color: var(--color-#{$color}-light);
+            }
         }
     }
 
@@ -52,16 +26,6 @@
         &:focus, &:hover {
             box-shadow: 0 0 0 1px var(--color-gray-light);
             background-color: var(--color-white-light);
-        }
-    }
-
-    &--gray {
-        background-color: var(--color-gray);
-        border: 1px solid var(--color-gray-dark);
-
-        &:focus, &:hover {
-            box-shadow: 0 0 0 1px var(--color-gray-light);
-            background-color: var(--color-gray-light);
         }
     }
 
