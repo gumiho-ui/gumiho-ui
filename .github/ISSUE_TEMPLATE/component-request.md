@@ -1,23 +1,23 @@
 ---
 name: Component request
 about: Suggest an idea for a new component in Gumiho UI.
-title: ''
+title: "[NAME] component"
 labels: enhancement
 assignees: ''
 
 ---
 
-**Component name**
+# Component name
 Name of new component or existing one if extending it's functionality.
 
-**Description**
+## Description
 Briefly describe what this component should do and list of proposed parameters.
 
-**UI/UX Design**
+## UI/UX Design
 Screenshots or any other form to show how this component should looks like.
 
-**Describe alternatives you've considered**
+## Describe alternatives you've considered
 A clear and concise description of any alternative solutions or features you've considered.
 
-**Additional context**
+## Additional context
 Add any other context or screenshots about the feature request here.
