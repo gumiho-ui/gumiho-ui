@@ -11,11 +11,22 @@ $breakpoint-lg: 82rem !default;
     // ==============================
     --border-radius-component: 6px;
     --padding-component: 8px;
+    --padding-component-small: 2px;
     --margin-component: .55rem;
     --grid-gutter: .25rem;
     // ==============================
     // Colors
     // ==============================
+    --color-primary: var(--color-blue);
+    --color-primary-dark: var(--color-blue-dark);
+    --color-primary-light: var(--color-blue-light);
+    --color-error: var(--color-red);
+    --color-error-dark: var(--color-red-dark);
+    --color-error-light: var(--color-red-light);
+    --color-disabled: var(--color-gray);
+    --color-disabled-dark: var(--color-gray-dark);
+    --color-disabled-light: var(--color-gray-light);
+
     --color-white: #fffff0;
     --color-white-dark: #fefefa;
     --color-white-light: #fff;

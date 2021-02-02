@@ -1,0 +1,63 @@
+﻿.form-component {
+    display: inline-flex;
+    flex-direction: column;
+    margin: var(--margin-component);
+    height: 34px;
+    justify-content: center;
+
+    label {
+        display: inline-flex;
+        cursor: pointer;
+        position: relative;
+
+        &.readonly {
+            pointer-events: none;
+        }
+
+        &.disabled {
+            color: var(--color-disabled-dark);
+        }
+
+        input {
+            display: none;
+        }
+    }
+
+    .checkbox {
+        appearance: none;
+        padding: var(--padding-component-small);
+        border: 1px solid var(--color-disabled);
+        border-radius: calc(var(--border-radius-component)/2);
+        outline: 0;
+        display: flex;
+        width: 12px;
+        height: 12px;
+        justify-content: center;
+        margin-right: var(--padding-component);
+
+        &:focus {
+            border: 1px solid var(--color-primary);
+            box-shadow: 0 0 0 1px var(--color-primary-light);
+        }
+
+        &.checked, &.indeterminate {
+            background-color: var(--color-primary);
+        }
+
+        &.disabled {
+            background-color: var(--color-disabled-light);
+        }
+    }
+
+    .form-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .validation {
+        span {
+            font-size: .75rem;
+            color: var(--color-error);
+        }
+    }
+}

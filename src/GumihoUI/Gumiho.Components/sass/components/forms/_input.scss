@@ -1,8 +1,23 @@
-﻿.form-component {
+﻿@import 'checkbox';
+
+.form-component {
     display: inline-flex;
     margin: var(--margin-component);
 
     .form-component-group {
+        &__label {
+            &[readonly] {
+                pointer-events: none;
+            }
+
+            display: inline-flex;
+            cursor: pointer;
+            position: relative;
+
+            &--disabled {
+                color: var(--color-gray-dark);
+            }
+        }
 
         .form-input {
             &__textBox {
