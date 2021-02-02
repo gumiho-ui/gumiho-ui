@@ -1,0 +1,80 @@
+﻿@namespace GumihoUI
+@inherits InputBase<bool>
+
+<div class="form-component">
+    <label class="@(Disabled ? "disabled": string.Empty) @(ReadOnly ? "readonly": string.Empty)" readonly="@ReadOnly">
+        <input tabindex="-1" type="checkbox" @bind="@CurrentValue" @bind:event="oninput" @onchange="@OnChange" readonly="@ReadOnly" disabled="@Disabled" />
+        <span tabindex="@(Disabled ? "-1" :"0")" @onkeypress="@ToggleValue"
+              class="checkbox
+                    @(Value ? "checked": string.Empty)
+                    @(Indeterminate ? "indeterminate": string.Empty)
+                    @(Disabled ? "disabled": string.Empty)
+                  ">
+            @if (!Indeterminate)
+            {
+                <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <line transform="rotate(11.469269752502441 3.781257152557376,7.7812442779541)" y2="9.57811" x2="6.26562" y1="5.98438" x1="1.29689" stroke-width="1.5" stroke="#fff" />
+                        <line stroke="#fff" transform="rotate(1.2838910818099976 8.031243324279663,5.782813072204603)" y2="2.41267" x2="10.20842" y1="9.15296" x1="5.85407" stroke-width="1.5" />
+                    </g>
+                </svg>
+            }
+            else if (Indeterminate)
+            {
+                <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">
+                    <line y2="6" x2="10" y1="6" x1="2" stroke-width="1.5" stroke="#fff" />
+                </svg>
+            }
+        </span>
+        <span>@ChildContent</span>
+    </label>
+    <div class="form-group">
+        <div class="validation">
+            @if (Validatable)
+            {
+                @foreach (var message in ValidationMessages)
+                {
+                    <span>@message</span>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public bool Validatable { get; set; } = true;
+    [Parameter] public bool Indeterminate { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private IList<string> ValidationMessages = new List<string>();
+
+    void OnChange(ChangeEventArgs e)
+    {
+        Validate();
+    }
+
+    void ToggleValue(KeyboardEventArgs e)
+    {
+        if (!this.ReadOnly && e.Code is "Space" or "Enter")
+        {
+            ValueChanged.InvokeAsync(!this.Value);
+            Validate();
+        }
+    }
+
+    private void Validate()
+    {
+        EditContext.NotifyFieldChanged(FieldIdentifier);
+        ValidationMessages = EditContext.GetValidationMessages(FieldIdentifier).ToArray();
+    }
+
+    protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out bool result, [NotNullWhen(false)] out string? validationErrorMessage)
+    {
+        result = value == bool.TrueString;
+        validationErrorMessage = null;
+        return true;
+    }
+}

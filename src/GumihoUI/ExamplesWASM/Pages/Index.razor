@@ -5,6 +5,7 @@
         <h1>Input</h1>
         <EditForm Model="M">
             <DataAnnotationsValidator />
+            
             <GRow FitColumns="true">
                 <GColumn ColumnSpan="3">
                     <label>First Name</label>
@@ -16,9 +17,19 @@
                     <GTextBox @bind-Value="@M.MiddleName" Disabled="true"></GTextBox>
                 </GColumn>
 
-                <GColumn ColumnSpan="4">
+                <GColumn ColumnSpan="3">
                     <label>Last Name</label>
-                    <GTextBox @bind-Value="@M.LastName" Validatable="false"></GTextBox>
+                    <GTextBox @bind-Value="@M.LastName" Validatable="true"></GTextBox>
+                </GColumn>
+
+                <GColumn ColumnSpan="3">
+                    <GCheckbox @bind-Value="@M.Agree" Validatable="true">Agree</GCheckbox>
+
+                    <GCheckbox @bind-Value="@M.Disabled" Disabled="true">disabled</GCheckbox>
+
+                    <GCheckbox @bind-Value="@M.Disabled" ReadOnly="true">readonly</GCheckbox>
+
+                    <GCheckbox Value="@M.Indeterminate" ValueExpression="@(() => M.Indeterminate)" ValueChanged="@ChangeIndeterminate" Indeterminate="@M.IsIndeterminate">indeterminate</GCheckbox>
                 </GColumn>
             </GRow>
 
@@ -55,6 +66,14 @@
         [StringLength(maximumLength: 5, MinimumLength = 3, ErrorMessage = "Incorrect lenght")]
         [Required]
         public string LastName { get; set; }
+
+        [CheckboxTicked(ErrorMessage = "You have to tick this checkbox")]
+        public bool Agree { get; set; } = true;
+
+        public bool Disabled { get; set; } = true;
+
+        public bool Indeterminate { get; set; }
+        public bool IsIndeterminate { get; set; } = true;
     }
 
     public DataModel M { get; set; } = new DataModel();
@@ -67,5 +86,11 @@
     private void RightClick(MouseEventArgs e)
     {
         Console.WriteLine("right click!");
+    }
+
+    private void ChangeIndeterminate(bool value)
+    {
+        M.IsIndeterminate = false;
+        M.Indeterminate = value;
     }
 }
