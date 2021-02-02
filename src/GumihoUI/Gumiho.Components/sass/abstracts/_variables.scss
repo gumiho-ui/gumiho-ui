@@ -12,6 +12,7 @@ $breakpoint-lg: 82rem !default;
     --border-radius-component: 6px;
     --padding-component: 8px;
     --padding-component-small: 2px;
+    --height-form-component: 34px;
     --margin-component: .55rem;
     --grid-gutter: .25rem;
     // ==============================
@@ -26,7 +27,6 @@ $breakpoint-lg: 82rem !default;
     --color-disabled: var(--color-gray);
     --color-disabled-dark: var(--color-gray-dark);
     --color-disabled-light: var(--color-gray-light);
-
     --color-white: #fffff0;
     --color-white-dark: #fefefa;
     --color-white-light: #fff;

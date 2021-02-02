@@ -2,7 +2,7 @@
     display: inline-flex;
     flex-direction: column;
     margin: var(--margin-component);
-    height: 34px;
+    height: var(--height-form-component);
     justify-content: center;
 
     label {
