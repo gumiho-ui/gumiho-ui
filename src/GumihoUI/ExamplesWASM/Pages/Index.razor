@@ -2,27 +2,27 @@
 
 <GRow>
     <GColumn>
-        <h4>Input</h4>
+        <h5>Input</h5>
         <EditForm Model="M">
             <DataAnnotationsValidator />
-            
-            <GRow FitColumns="true">
-                <GColumn ColumnSpan="3">
+
+            <GRow>
+                <GColumn ColumnMediumSpan="3">
                     <label>First Name</label>
                     <GTextBox @bind-Value="@M.FirstName" MaxLength="5" Placeholder="First name" Counter="true"></GTextBox>
                 </GColumn>
 
-                <GColumn ColumnSpan="3">
+                <GColumn ColumnMediumSpan="3">
                     <label>Middle Name</label>
                     <GTextBox @bind-Value="@M.MiddleName" Disabled="true"></GTextBox>
                 </GColumn>
 
-                <GColumn ColumnSpan="3">
+                <GColumn ColumnMediumSpan="3">
                     <label>Last Name</label>
                     <GTextBox @bind-Value="@M.LastName" Validatable="true"></GTextBox>
                 </GColumn>
 
-                <GColumn ColumnSpan="3">
+                <GColumn ColumnMediumSpan="3">
                     <GCheckbox @bind-Value="@M.Agree" Validatable="true">Agree</GCheckbox>
 
                     <GCheckbox @bind-Value="@M.Disabled" Disabled="true">disabled</GCheckbox>
@@ -34,7 +34,7 @@
             </GRow>
 
             <GRow>
-                <h4>Buttons</h4>
+                <h5>Buttons</h5>
                 <GColumn>
                     <GButton OnClickCallback="@LeftClick">Blue</GButton>
                     <GButton OnRigthClickCallback="@RightClick" ButtonColor="@ButtonColors.Red">Red</GButton>
@@ -57,6 +57,25 @@
                     <h4>Heading 4</h4>
                     <h5>Heading 5</h5>
                     <h6>Heading 6</h6>
+                </GColumn>
+            </GRow>
+            <GRow>
+                <GColumn>
+                    <blockquote>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse velit massa, pulvinar non pretium scelerisque, viverra non velit. Nulla facilisi. Nullam suscipit, dolor eu lacinia hendrerit, augue eros facilisis nulla, id interdum dolor lacus vulputate risus. Sed scelerisque est a arcu sollicitudin dapibus. In a felis non purus pretium consequat a eget diam. Curabitur elementum, leo a ornare cursus, enim odio tempor dui, eget tempor nisl ex quis risus. Aliquam nec sem quis massa luctus tempus non eget purus.</p>
+                        <p class="author">Loremus Ipsumus</p>
+                    </blockquote>
+
+                    <span class="text-large">.text-large class,</span>
+                    <small>small element,</small>
+                    <i>i element,</i>
+                    <b>b element,</b>
+                    <strong>strong element,</strong>
+                    <s>s element,</s>
+                    <u>u element</u>
+                    <p class="text-capitalize">capitalize</p>
+                    <p class="text-lowercase">lowercase</p>
+                    <p class="text-uppercase">uppercase</p>
                 </GColumn>
             </GRow>
         </EditForm>
