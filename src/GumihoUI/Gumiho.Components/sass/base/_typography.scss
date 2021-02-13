@@ -1,112 +1,96 @@
 ﻿body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 16px;
+}
 
-    h {
+h {
 
 
-        &1 {
-            font-size: 5rem;
-            font-weight: 300;
-            line-height: 7rem;
-        }
-
-        &2 {
-            font-size: 4rem;
-            font-weight: 300;
-            line-height: 5.5rem;
-        }
-
-        &3 {
-            font-size: 3.5rem;
-            font-weight: 300;
-            line-height: 4.5rem;
-        }
-
-        &4 {
-            font-size: 3rem;
-            font-weight: 300;
-            line-height: 4rem;
-        }
-
-        &5 {
-            font-size: 2rem;
-            font-weight: 300;
-            line-height: 2.5rem;
-        }
-
-        &6 {
-            font-size: 1.5rem;
-            font-weight: 300;
-            line-height: 2rem;
-        }
-    }
-
-    p {
-        line-height: 1.25rem;
-        margin: 1rem 0;
-    }
-
-    blockquote {
-        text-align: center;
-        margin: 1rem 3rem;
-        color: var(--color-gray-dark);
-        text-align: justify;
-        font-style: italic;
+    &1 {
+        font-size: 5rem;
         font-weight: 300;
-
-        &::before, &::after {
-            display: block;
-            content: '';
-            margin: 1rem auto;
-            width: 50%;
-            border-top: 2px solid var(--color-gray-light);
-        }
-
-        p {
-            text-indent: 2rem;
-        }
-
-        .author {
-            text-align: right;
-            font-size: .9rem;
-            font-weight: normal;
-        }
+        line-height: 7rem;
     }
 
-    .text-large {
-        font-size: 1.2rem;
+    &2 {
+        font-size: 4rem;
+        font-weight: 300;
+        line-height: 5.5rem;
     }
 
-    small, text-small {
-        font-size: .8rem;
+    &3 {
+        font-size: 3.5rem;
+        font-weight: 300;
+        line-height: 4.5rem;
     }
 
-    i, em, .text-italic {
-        font-style: italic;
+    &4 {
+        font-size: 3rem;
+        font-weight: 300;
+        line-height: 4rem;
     }
 
-    b, strong, .text-bold {
-        font-weight: bold;
+    &5 {
+        font-size: 2rem;
+        font-weight: 300;
+        line-height: 2.5rem;
     }
 
-    s, .text-line-through {
-        text-decoration: line-through;
+    &6 {
+        font-size: 1.5rem;
+        font-weight: 300;
+        line-height: 2rem;
+    }
+}
+
+p {
+    line-height: 1.25rem;
+    margin: 1rem 0;
+}
+
+blockquote {
+    text-align: center;
+    margin: 1rem 3rem;
+    color: var(--color-gray-dark);
+    text-align: justify;
+    font-style: italic;
+    font-weight: 300;
+
+    &::before, &::after {
+        display: block;
+        content: '';
+        margin: 1rem auto;
+        width: 50%;
+        border-top: 2px solid var(--color-gray-light);
     }
 
-    u, text-underline {
-        text-decoration: underline;
+    .author {
+        text-align: right;
+        font-size: .9rem;
+        font-weight: normal;
     }
+}
 
-    .text-capitalize {
-        text-transform: capitalize;
-    }
+.text-large {
+    font-size: 1.2rem;
+}
 
-    .text-uppercase {
-        text-transform: uppercase;
-    }
+small, text-small {
+    font-size: .8rem;
+}
 
-    .text-lowercase {
-        text-transform: lowercase;
-    }
+i, em {
+    @extend .text-italic;
+}
+
+b, strong {
+    @extend .text-bold;
+}
+
+s {
+    @extend .text-line-through;
+}
+
+u {
+    @extend .text-underline;
 }
