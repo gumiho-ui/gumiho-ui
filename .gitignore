@@ -352,3 +352,4 @@ MigrationBackup/
 # Generated css files
 /src/GumihoUI/Gumiho.Components/wwwroot/main.min.css
 /src/GumihoUI/Gumiho.Components/wwwroot/main.css
+/src/GumihoUI/Gumiho.Components/sass/main.css
