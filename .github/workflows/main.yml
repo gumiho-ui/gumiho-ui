@@ -1,4 +1,4 @@
-name: Blazor WASM Example Page
+name: Blazor WASM Examples Page
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
         run: dotnet tool install Excubo.WebCompiler --global
         
       - name: Run WebCompiler
-        run: webcompiler -r src/GumihoUI/Gumiho.Components/sass/main.scss -o src/GumihoUI/Gumiho.Components/wwwroot -z disabled -m disabled
+        run: webcompiler -c .\webcompilerconfiguration.json -f files.conf -r
         
       - name: Publish ExamplesWASM Project
         run: dotnet publish src/GumihoUI/ExamplesWASM/ExamplesWASM.csproj -c Release -o release --nologo /p:EnvironmentName=Development
