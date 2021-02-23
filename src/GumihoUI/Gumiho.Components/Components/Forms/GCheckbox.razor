@@ -1,7 +1,7 @@
 ﻿@namespace GumihoUI
 @inherits InputBase<bool>
 
-<div class="form-component">
+<div class="checkbox-component">
     <label class="@(Disabled ? "disabled": string.Empty) @(ReadOnly ? "readonly": string.Empty)" readonly="@ReadOnly">
         <input tabindex="-1" type="checkbox" @bind="@CurrentValue" @bind:event="oninput" @onchange="@OnChange" readonly="@ReadOnly" disabled="@Disabled" />
         <span tabindex="@(Disabled ? "-1" :"0")" @onkeypress="@ToggleValue"
@@ -14,8 +14,8 @@
             {
                 <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">
                     <g>
-                        <line transform="rotate(11.469269752502441 3.781257152557376,7.7812442779541)" y2="9.57811" x2="6.26562" y1="5.98438" x1="1.29689" stroke-width="1.5" stroke="#fff" />
-                        <line stroke="#fff" transform="rotate(1.2838910818099976 8.031243324279663,5.782813072204603)" y2="2.41267" x2="10.20842" y1="9.15296" x1="5.85407" stroke-width="1.5" />
+                        <line transform="rotate(11.469269752502441 3.781257152557376,7.7812442779541)" y2="9.57811" x2="6.26562" y1="5.98438" x1="1.29689" stroke-width="1.5" stroke="#fff" stroke-opacity="0" />
+                        <line stroke="#fff" stroke-opacity="0" transform="rotate(1.2838910818099976 8.031243324279663,5.782813072204603)" y2="2.41267" x2="10.20842" y1="9.15296" x1="5.85407" stroke-width="1.5" />
                     </g>
                 </svg>
             }
