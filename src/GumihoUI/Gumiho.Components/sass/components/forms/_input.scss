@@ -3,6 +3,8 @@
 .form-component {
     display: inline-flex;
     margin: var(--margin-component);
+    height: 50px;
+    justify-content: end;
 
     .form-component-group {
         &__label {
