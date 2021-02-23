@@ -10,12 +10,16 @@
     text-transform: lowercase;
 }
 
-.text-line-through {
+.text-decoration-line-through {
     text-decoration: line-through;
 }
 
-.text-underline {
+.text-decoration-underline {
     text-decoration: underline;
+}
+
+.text-decoration-overline {
+    text-decoration: overline;
 }
 
 .text-bold {
