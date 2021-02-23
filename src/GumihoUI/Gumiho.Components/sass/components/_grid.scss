@@ -30,7 +30,7 @@
         margin: 0 auto;
 
         @for $i from 1 through 12 {
-            .column-medium-#{$i} {
+            .column-large-#{$i} {
                 grid-column: span #{$i};
             }
         }
