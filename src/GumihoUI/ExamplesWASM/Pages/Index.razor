@@ -51,6 +51,18 @@
                 </GColumn>
             </GRow>
             <GRow>
+                <h6>Dropdowns</h6>
+                <GColumn>
+                    <GDropdown Items="@dropdownList" @bind-Value="@M.Dropdown"></GDropdown>
+                    <span>@M.Dropdown</span>
+                </GColumn>
+
+                <GColumn>
+                    <GDropdown Items="@dropdownList" @bind-Values="@M.DropdownMulti" MultiSelect="true"></GDropdown>
+                    <span>@System.Text.Json.JsonSerializer.Serialize(M.DropdownMulti)</span>
+                </GColumn>
+            </GRow>
+            <GRow>
                 <GColumn>
                     <h4>Typography and text utility</h4>
                     <h1>Heading 1</h1>
@@ -74,8 +86,8 @@
                     <b>b element,</b>
                     <strong>strong element,</strong>
                     <s>s element,</s>
-                    <u>u element</u>
-                    <span class="text-decoration-underline">text</span>
+                    <u>u element,</u>
+                    <span class="text-decoration-overline">text overline</span>
                     <p class="text-capitalize">capitalize</p>
                     <p class="text-lowercase">lowercase</p>
                     <p class="text-uppercase">uppercase</p>
@@ -133,7 +145,20 @@
 
         public bool Indeterminate { get; set; }
         public bool IsIndeterminate { get; set; } = true;
+
+        public int Dropdown { get; set; }
+        public List<int> DropdownMulti { get; set; } = new();
     }
+
+    public List<DropdownListItem<int>> dropdownList = new()
+    {
+        new() { Value = 1, Text = "Red" },
+        new() { Value = 2, Text = "Green", Selected = true },
+        new() { Value = 3, Text = "Blue" },
+        new() { Value = 4, Text = "Yellow", Disabled = true },
+        new() { Value = 5, Text = "Black" },
+        new() { Value = 6, Text = "White" }
+    };
 
     public DataModel M { get; set; } = new DataModel();
 

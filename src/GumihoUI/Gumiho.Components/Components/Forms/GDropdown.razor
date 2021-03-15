@@ -1,0 +1,166 @@
+﻿@using GumihoUI.Models
+@namespace GumihoUI
+@typeparam TValue
+
+<div class="dropdown-component"
+     @onmouseout="MouseLeave"
+     @onmouseover="MouseEnter"
+     @onblur="LostFocus"
+     @onkeydown="OpenMenu"
+     tabindex="0">
+
+    <div class="dropdown" @onclick="ToggleMenu">
+        <div class="dropdown-inner @(showItems ? "open" : string.Empty)">
+            <span>
+                @string.Join(", ", Items.Where(i => i.Selected).Select(i => i.Text))
+            </span>
+            <div class="dropdown-arrow"></div>
+        </div>
+    </div>
+
+    @if (showItems)
+    {
+        <div class="dropdown-items">
+            @foreach (var option in Items)
+            {
+                <div class="dropdown-item
+                     @(option.Selected ? "dropdown-item-selected" : string.Empty)
+                     @(option.Disabled ? "dropdown-item-disabled" : string.Empty)"
+                     @onclick="() => UpdateValue(option)"
+                     @onkeydown="e => UpdateValueByKeydown(e, option)"
+                     tabindex="@(!option.Disabled ? 0 : null)">
+                    @option.Text
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private bool showItems = false;
+    private bool shouldClose = false;
+
+    [Parameter] public List<DropdownListItem<TValue>> Items { get; set; } = new();
+    [Parameter] public TValue Value { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public List<TValue> Values { get; set; }
+    [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
+    [Parameter] public bool MultiSelect { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (!MultiSelect)
+            {
+                this.Value = Items.Where(i => i.Selected).First().Value;
+                ChangeSingle(this.Value);
+            }
+            else
+            {
+                foreach (var item in Items.Where(i => i.Selected))
+                {
+                    ChangeMulti(item.Value);
+                }
+            }
+        }
+    }
+
+    void ToggleMenu() => showItems = !showItems;
+
+    void OnChange(ChangeEventArgs e)
+    {
+        var value = (TValue)Convert.ChangeType(e.Value, typeof(TValue));
+
+        if (value is null)
+        {
+            return;
+        }
+
+        if (!MultiSelect)
+        {
+            ChangeSingle(value);
+        }
+        else
+        {
+            ChangeMulti(value);
+        }
+    }
+
+    void UpdateValueByKeydown(KeyboardEventArgs e, DropdownListItem<TValue> option)
+    {
+        if (e.Code is "Space" or "Enter")
+        {
+            UpdateValue(option);
+        }
+    }
+
+    void UpdateValue(DropdownListItem<TValue> option)
+    {
+        if (option.Disabled)
+            return;
+
+        if (!MultiSelect)
+        {
+            foreach (var item in Items.Where(i => i.Selected))
+            {
+                item.Selected = false;
+            }
+
+            ChangeSingle(option.Value);
+            ToggleMenu();
+        }
+        else
+        {
+            ChangeMulti(option.Value);
+        }
+
+        option.Selected = !option.Selected;
+    }
+
+    void ChangeSingle(TValue value)
+    {
+        ValueChanged.InvokeAsync(value);
+    }
+
+    void ChangeMulti(TValue value)
+    {
+        if (Values is null)
+            Values = new();
+
+        if (!Values.Contains(value))
+        {
+            Values.Add(value);
+        }
+        else
+        {
+            Values.Remove(value);
+        }
+        ValuesChanged.InvokeAsync(Values);
+    }
+
+    private void OpenMenu(KeyboardEventArgs e)
+    {
+        if (e.Code is "Space" or "Enter" && !showItems)
+        {
+            this.ToggleMenu();
+        }
+    }
+
+    private void MouseLeave()
+    {
+        shouldClose = true;
+    }
+
+    private void MouseEnter()
+    {
+        shouldClose = false;
+    }
+
+    private void LostFocus(FocusEventArgs focusEventArgs)
+    {
+        if (shouldClose)
+            showItems = false;
+    }
+}
