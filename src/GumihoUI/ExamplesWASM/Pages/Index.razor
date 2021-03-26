@@ -58,7 +58,7 @@
                 </GColumn>
 
                 <GColumn>
-                    <GDropdown Items="@dropdownList" @bind-Values="@M.DropdownMulti" MultiSelect="true"></GDropdown>
+                    <GDropdown Items="@dropdownList" @bind-Values="@M.DropdownMulti" MultiSelect="true" Disabled="true"></GDropdown>
                     <span>@System.Text.Json.JsonSerializer.Serialize(M.DropdownMulti)</span>
                 </GColumn>
             </GRow>

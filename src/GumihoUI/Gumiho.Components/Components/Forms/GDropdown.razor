@@ -2,12 +2,13 @@
 @namespace GumihoUI
 @typeparam TValue
 
-<div class="dropdown-component"
+<div class="dropdown-component @(Disabled ? "disabled" : string.Empty)"
      @onmouseout="MouseLeave"
      @onmouseover="MouseEnter"
      @onblur="LostFocus"
      @onkeydown="OpenMenu"
-     tabindex="0">
+     @onkeydown:preventDefault="dropdownPreventDefault"
+     tabindex="@(Disabled ? "-1" :"0")">
 
     <div class="dropdown" @onclick="ToggleMenu">
         <div class="dropdown-inner @(showItems ? "open" : string.Empty)">
@@ -21,13 +22,21 @@
     @if (showItems)
     {
         <div class="dropdown-items">
-            @foreach (var option in Items)
+            @if (ShowSearch)
+            {
+                <div class="dropdown-search">
+                    <input class="dropdown-filter" placeholder="@Placeholder" type="text" @bind-value="filter" @bind-value:event="oninput"/>
+                </div>
+            }
+            @foreach (var option in Items.Where(i => i.Text.Contains(filter, StringComparison.InvariantCultureIgnoreCase)))
             {
                 <div class="dropdown-item
                      @(option.Selected ? "dropdown-item-selected" : string.Empty)
                      @(option.Disabled ? "dropdown-item-disabled" : string.Empty)"
                      @onclick="() => UpdateValue(option)"
                      @onkeydown="e => UpdateValueByKeydown(e, option)"
+                     @onkeydown:preventDefault="optionPreventDefault"
+                     @onkeydown:stopPropagation="optionStopPropagation"
                      tabindex="@(!option.Disabled ? 0 : null)">
                     @option.Text
                 </div>
@@ -36,17 +45,25 @@
     }
 </div>
 
+<span>filter @filter prevent @optionPreventDefault stop @optionStopPropagation ddprevent @dropdownPreventDefault ddkey @ddkey opkey @opkey</span>
+
 @code {
-    private bool showItems = false;
-    private bool shouldClose = false;
+    private bool showItems;
+    private bool shouldClose;
+    private bool dropdownPreventDefault;
+    private bool optionPreventDefault, optionStopPropagation;
+    private string ddkey, opkey;
+    private string filter = string.Empty;
 
     [Parameter] public List<DropdownListItem<TValue>> Items { get; set; } = new();
-    [Parameter] public TValue Value { get; set; }
+    [Parameter] public TValue Value { get; set; } = default!;
     [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
-    [Parameter] public List<TValue> Values { get; set; }
+    [Parameter] public List<TValue> Values { get; set; } = default!;
     [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
     [Parameter] public bool MultiSelect { get; set; }
     [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool ShowSearch { get; set; } = true;
+    [Parameter] public string Placeholder { get; set; } = "Search";
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -67,7 +84,12 @@
         }
     }
 
-    void ToggleMenu() => showItems = !showItems;
+    void ToggleMenu()
+    {
+        if (!Disabled)
+            showItems = !showItems;
+    }
+
 
     void OnChange(ChangeEventArgs e)
     {
@@ -93,7 +115,14 @@
         if (e.Code is "Space" or "Enter")
         {
             UpdateValue(option);
+            optionPreventDefault = true;
+            optionStopPropagation = true;
+            opkey = "option";
+            return;
         }
+        opkey = "";
+        optionStopPropagation = false;
+        optionPreventDefault = false;
     }
 
     void UpdateValue(DropdownListItem<TValue> option)
@@ -144,8 +173,13 @@
     {
         if (e.Code is "Space" or "Enter" && !showItems)
         {
-            this.ToggleMenu();
+            ToggleMenu();
+            dropdownPreventDefault = true;
+            ddkey = "dd";
+            return;
         }
+        ddkey = "";
+        dropdownPreventDefault = false;
     }
 
     private void MouseLeave()
