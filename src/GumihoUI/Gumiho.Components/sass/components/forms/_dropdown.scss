@@ -120,6 +120,10 @@
         }
     }
 
+    .dropdown-search {
+        margin-bottom: 2px;
+    }
+
     .dropdown-filter {
         font: inherit;
         width: 100%;
@@ -133,8 +137,13 @@
             color: var(--color-gray-light);
         }
 
-        &:focus {
+        &:hover {
             border-bottom: 1px solid var(--color-gray-dark);
+        }
+
+        &:focus {
+            border-bottom: 1px solid var(--color-blue);
+            box-shadow: 0 2px 2px -1px var(--color-blue-light);
         }
     }
 }

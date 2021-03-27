@@ -1,4 +1,5 @@
 ﻿@using GumihoUI.Models
+@using System.Globalization
 @namespace GumihoUI
 @typeparam TValue
 
@@ -25,10 +26,12 @@
             @if (ShowSearch)
             {
                 <div class="dropdown-search">
-                    <input class="dropdown-filter" placeholder="@Placeholder" type="text" @bind-value="filter" @bind-value:event="oninput"/>
+                    <input class="dropdown-filter" placeholder="@Placeholder" type="text"
+                           @onblur="LostFocus" @ref="filterInput"
+                           @bind-value="filter" @bind-value:event="oninput" />
                 </div>
             }
-            @foreach (var option in Items.Where(i => i.Text.Contains(filter, StringComparison.InvariantCultureIgnoreCase)))
+            @foreach (var option in FilterItems())
             {
                 <div class="dropdown-item
                      @(option.Selected ? "dropdown-item-selected" : string.Empty)
@@ -45,7 +48,7 @@
     }
 </div>
 
-<span>filter @filter prevent @optionPreventDefault stop @optionStopPropagation ddprevent @dropdownPreventDefault ddkey @ddkey opkey @opkey</span>
+<span>filter @filter @FilterItems()?.Count prevent @optionPreventDefault stop @optionStopPropagation ddprevent @dropdownPreventDefault ddkey @ddkey opkey @opkey</span>
 
 @code {
     private bool showItems;
@@ -54,6 +57,7 @@
     private bool optionPreventDefault, optionStopPropagation;
     private string ddkey, opkey;
     private string filter = string.Empty;
+    private ElementReference filterInput;
 
     [Parameter] public List<DropdownListItem<TValue>> Items { get; set; } = new();
     [Parameter] public TValue Value { get; set; } = default!;
@@ -84,10 +88,21 @@
         }
     }
 
-    void ToggleMenu()
+    async void ToggleMenu()
     {
         if (!Disabled)
+        {
             showItems = !showItems;
+
+            if (!showItems)
+            {
+                filter = string.Empty;
+            }
+            else
+            {
+                //await filterInput.FocusAsync();
+            }
+        }
     }
 
 
@@ -108,6 +123,16 @@
         {
             ChangeMulti(value);
         }
+    }
+
+    List<DropdownListItem<TValue>> FilterItems()
+    {
+        var compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+
+        return Items
+            .Where(i => compareInfo.IndexOf(i.Text, filter,
+                CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) > -1)
+            .ToList();
     }
 
     void UpdateValueByKeydown(KeyboardEventArgs e, DropdownListItem<TValue> option)
@@ -195,6 +220,6 @@
     private void LostFocus(FocusEventArgs focusEventArgs)
     {
         if (shouldClose)
-            showItems = false;
+            ToggleMenu();
     }
 }
