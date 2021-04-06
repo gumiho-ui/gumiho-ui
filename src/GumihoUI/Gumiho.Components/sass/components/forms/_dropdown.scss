@@ -122,28 +122,30 @@
 
     .dropdown-search {
         margin-bottom: 2px;
+        padding: 5px;
     }
 
     .dropdown-filter {
         font: inherit;
         width: 100%;
         box-sizing: border-box;
-        border: 0;
-        border-bottom: 1px solid var(--color-gray);
+        background-color: #f1f1f1;
+        border-radius: var(--border-radius-component);
+        border: 1px solid transparent;
         outline: none;
         padding: 5px;
 
         &::placeholder {
-            color: var(--color-gray-light);
+            color: var(--color-gray-dark);
         }
 
         &:hover {
-            border-bottom: 1px solid var(--color-gray-dark);
+            border-color: var(--color-gray-dark);
         }
 
         &:focus {
-            border-bottom: 1px solid var(--color-blue);
-            box-shadow: 0 2px 2px -1px var(--color-blue-light);
+            border-color: var(--color-blue);
+            box-shadow: 0 0 0 1px var(--color-blue-light);
         }
     }
 }
