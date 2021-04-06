@@ -75,7 +75,7 @@
     private string filter = string.Empty;
     private ElementReference filterInput;
 
-    [Parameter] public List<DropdownListItem<TValue>> Items { get; set; } = new();
+    [Parameter] public List<SelectListItem<TValue>> Items { get; set; } = new();
     [Parameter] public TValue Value { get; set; } = default!;
     [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
     [Parameter] public List<TValue> Values { get; set; } = default!;
@@ -146,7 +146,7 @@
         }
     }
 
-    List<DropdownListItem<TValue>> FilterItems()
+    List<SelectListItem<TValue>> FilterItems()
     {
         var compareInfo = CultureInfo.InvariantCulture.CompareInfo;
 
@@ -156,7 +156,7 @@
             .ToList();
     }
 
-    void UpdateValueByKeydown(KeyboardEventArgs e, DropdownListItem<TValue> option)
+    void UpdateValueByKeydown(KeyboardEventArgs e, SelectListItem<TValue> option)
     {
         if (e.Code is "Space" or "Enter")
         {
@@ -171,7 +171,7 @@
         optionPreventDefault = false;
     }
 
-    void UpdateValue(DropdownListItem<TValue> option)
+    void UpdateValue(SelectListItem<TValue> option)
     {
         if (option.Disabled)
             return;

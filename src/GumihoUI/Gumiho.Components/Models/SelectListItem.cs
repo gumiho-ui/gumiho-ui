@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace GumihoUI.Models
 {
-    public class DropdownListItem<T>
+    public class SelectListItem<T>
     {
         /// <summary>
-        /// Gets or sets a value that indicate whether this <see cref="DropdownListItem{T}" /> is selected.
+        /// Gets or sets a value that indicate whether this <see cref="SelectListItem{T}" /> is selected.
         /// </summary>
         public bool Selected { get; set; }
         /// <summary>
@@ -21,12 +21,12 @@ namespace GumihoUI.Models
         /// </summary>
         public string Text { get; set; }
         /// <summary>
-        /// Gets or sets a value that indicate whether this <see cref="DropdownListItem{T}" /> is disabled.
+        /// Gets or sets a value that indicate whether this <see cref="SelectListItem{T}" /> is disabled.
         /// </summary>
         public bool Disabled { get; set; }
         /// <summary>
         /// Represents the group of dropdown list items.
         /// </summary>
-        public DropdownListGroup Group { get; set; }
+        public SelectListGroup Group { get; set; }
     }
 }
