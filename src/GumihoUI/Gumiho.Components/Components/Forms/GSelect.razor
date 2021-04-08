@@ -3,39 +3,46 @@
 @namespace GumihoUI
 @typeparam TValue
 
-<div class="dropdown-component @(Disabled ? "disabled" : string.Empty)"
+<div class="select-component @(Disabled ? "disabled" : string.Empty)"
      @onmouseout="MouseLeave"
      @onmouseover="MouseEnter"
      @onblur="LostFocus"
      @onkeydown="OpenMenu"
-     @onkeydown:preventDefault="dropdownPreventDefault"
+     @onkeydown:preventDefault="selectPreventDefault"
      tabindex="@(Disabled ? "-1" :"0")">
 
-    <div class="dropdown" @onclick="ToggleMenu">
-        <div class="dropdown-inner @(showItems ? "open" : string.Empty)">
-            <span>
-                @string.Join(", ", Items.Where(i => i.Selected).Select(i => i.Text))
-            </span>
-            <div class="dropdown-arrow"></div>
+    <div class="select" @onclick="ToggleMenu">
+        <div class="select-inner @(showItems ? "open" : string.Empty)">
+            @if (Items.Where(i => i.Selected).Any())
+            {
+                <span>
+                    @string.Join(", ", Items.Where(i => i.Selected).Select(i => i.Text))
+                </span>
+            }
+            else
+            {
+                <span class="select-placeholder">@Placeholder</span>
+            }
+            <div class="select-arrow"></div>
         </div>
     </div>
 
     @if (showItems)
     {
-        <div class="dropdown-items">
+        <div class="select-items">
             @if (ShowSearch)
             {
-                <div class="dropdown-search">
-                    <input class="dropdown-filter" placeholder="@Placeholder" type="text"
+                <div class="select-search">
+                    <input class="select-filter" placeholder="@SearchPlaceholder" type="text"
                            @onblur="LostFocus" @ref="filterInput"
                            @bind-value="filter" @bind-value:event="oninput" />
                 </div>
             }
             @foreach (var option in FilterItems())
             {
-                <div class="dropdown-item
-                     @(option.Selected ? "dropdown-item-selected" : string.Empty)
-                     @(option.Disabled ? "dropdown-item-disabled" : string.Empty)"
+                <div class="select-item
+                     @(option.Selected ? "select-item-selected" : string.Empty)
+                     @(option.Disabled ? "select-item-disabled" : string.Empty)"
                      @onclick="() => UpdateValue(option)"
                      @onkeydown="e => UpdateValueByKeydown(e, option)"
                      @onkeydown:preventDefault="optionPreventDefault"
@@ -46,7 +53,7 @@
             }
             @if (FilterItems().Count == 0)
             {
-                <div class="dropdown-item dropdown-item-disabled">
+                <div class="select-item select-item-disabled">
                     <i>
                         @if (!string.IsNullOrEmpty(filter))
                         {
@@ -64,12 +71,12 @@
     }
 </div>
 
-<span>filter @filter @FilterItems()?.Count prevent @optionPreventDefault stop @optionStopPropagation ddprevent @dropdownPreventDefault ddkey @ddkey opkey @opkey</span>
+<span>filter @filter @FilterItems()?.Count prevent @optionPreventDefault stop @optionStopPropagation ddprevent @selectPreventDefault ddkey @ddkey opkey @opkey</span>
 
 @code {
     private bool showItems;
     private bool shouldClose;
-    private bool dropdownPreventDefault;
+    private bool selectPreventDefault;
     private bool optionPreventDefault, optionStopPropagation;
     private string ddkey, opkey;
     private string filter = string.Empty;
@@ -83,7 +90,8 @@
     [Parameter] public bool MultiSelect { get; set; }
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public bool ShowSearch { get; set; } = true;
-    [Parameter] public string Placeholder { get; set; } = "Search...";
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public string SearchPlaceholder { get; set; } = "Search...";
     [Parameter] public string NoResultsMessage { get; set; } = "No results";
     [Parameter] public string NoItemsMessage { get; set; } = "No items";
 
@@ -91,7 +99,7 @@
     {
         if (firstRender)
         {
-            if (Items.Count == 0)
+            if (Items.Count == 0 || !Items.Where(i => i.Selected).Any())
                 return;
 
             if (!MultiSelect)
@@ -109,20 +117,16 @@
         }
     }
 
-    async void ToggleMenu()
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (showItems) await filterInput.FocusAsync();
+    }
+
+    void ToggleMenu()
     {
         if (!Disabled)
         {
             showItems = !showItems;
-
-            if (!showItems)
-            {
-                filter = string.Empty;
-            }
-            else
-            {
-                //await filterInput.FocusAsync();
-            }
         }
     }
 
@@ -220,12 +224,12 @@
         if (e.Code is "Space" or "Enter" && !showItems)
         {
             ToggleMenu();
-            dropdownPreventDefault = true;
+            selectPreventDefault = true;
             ddkey = "dd";
             return;
         }
         ddkey = "";
-        dropdownPreventDefault = false;
+        selectPreventDefault = false;
     }
 
     private void MouseLeave()

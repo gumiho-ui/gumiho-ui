@@ -53,12 +53,12 @@
             <GRow>
                 <h6>Dropdowns</h6>
                 <GColumn>
-                    <GDropdown Items="@dropdownList" @bind-Value="@M.Dropdown"></GDropdown>
+                    <GSelect Items="@dropdownList" @bind-Value="@M.Dropdown" Placeholder="Select value..." ></GSelect>
                     <span>@M.Dropdown</span>
                 </GColumn>
 
                 <GColumn>
-                    <GDropdown Items="@dropdownList" @bind-Values="@M.DropdownMulti" MultiSelect="true" Disabled="true"></GDropdown>
+                    <GSelect Items="@dropdownList" @bind-Values="@M.DropdownMulti" MultiSelect="true" Disabled="true"></GSelect>
                     <span>@System.Text.Json.JsonSerializer.Serialize(M.DropdownMulti)</span>
                 </GColumn>
             </GRow>
@@ -153,7 +153,7 @@
     public List<SelectListItem<int>> dropdownList = new()
     {
         new() { Value = 1, Text = "Red" },
-        new() { Value = 2, Text = "Green", Selected = true },
+        new() { Value = 2, Text = "Green" },
         new() { Value = 3, Text = "Blue" },
         new() { Value = 4, Text = "Yellow", Disabled = true },
         new() { Value = 5, Text = "Black" },
