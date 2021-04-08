@@ -1,99 +1,119 @@
 ﻿@using GumihoUI.Models
 @using System.Globalization
+@using System.Linq.Expressions
 @namespace GumihoUI
 @typeparam TValue
 
-<div class="select-component @(Disabled ? "disabled" : string.Empty)"
-     @onmouseout="MouseLeave"
-     @onmouseover="MouseEnter"
-     @onblur="LostFocus"
-     @onkeydown="OpenMenu"
-     @onkeydown:preventDefault="selectPreventDefault"
-     tabindex="@(Disabled ? "-1" :"0")">
+<div class="select-component">
+    <div class="select-component-group">
+        <div class="select-control @(Disabled ? "disabled" : string.Empty)"
+             @onmouseout="MouseLeave"
+             @onmouseover="MouseEnter"
+             @onblur="LostFocus"
+             @onkeydown="OpenMenu"
+             @onkeydown:preventDefault="selectPreventDefault"
+             tabindex="@(Disabled ? "-1" :"0")">
 
-    <div class="select" @onclick="ToggleMenu">
-        <div class="select-inner @(showItems ? "open" : string.Empty)">
-            @if (Items.Where(i => i.Selected).Any())
-            {
-                <span>
-                    @string.Join(", ", Items.Where(i => i.Selected).Select(i => i.Text))
-                </span>
-            }
-            else
-            {
-                <span class="select-placeholder">@Placeholder</span>
-            }
-            <div class="select-arrow"></div>
-        </div>
-    </div>
-
-    @if (showItems)
-    {
-        <div class="select-items">
-            @if (ShowSearch)
-            {
-                <div class="select-search">
-                    <input class="select-filter" placeholder="@SearchPlaceholder" type="text"
-                           @onblur="LostFocus" @ref="filterInput"
-                           @bind-value="filter" @bind-value:event="oninput" />
+            <div class="select" @onclick="ToggleMenu">
+                <div class="select-inner @(showItems ? "open" : string.Empty)">
+                    @if (Items.Where(i => i.Selected).Any())
+                    {
+                        <span>
+                            @string.Join(", ", Items.Where(i => i.Selected).Select(i => i.Text))
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="select-placeholder">@Placeholder</span>
+                    }
+                    <div class="select-arrow"></div>
                 </div>
-            }
-            @foreach (var option in FilterItems())
+            </div>
+
+            @if (showItems)
             {
-                <div class="select-item
+                <div class="select-items">
+                    @if (ShowSearch)
+                    {
+                        <div class="select-search">
+                            <input class="select-filter" placeholder="@SearchPlaceholder" type="text"
+                                   @onblur="LostFocus" @ref="filterInput"
+                                   @bind-value="filter" @bind-value:event="oninput" />
+                        </div>
+                    }
+                    @foreach (var option in FilterItems())
+                    {
+                        <div class="select-item
                      @(option.Selected ? "select-item-selected" : string.Empty)
                      @(option.Disabled ? "select-item-disabled" : string.Empty)"
-                     @onclick="() => UpdateValue(option)"
-                     @onkeydown="e => UpdateValueByKeydown(e, option)"
-                     @onkeydown:preventDefault="optionPreventDefault"
-                     @onkeydown:stopPropagation="optionStopPropagation"
-                     tabindex="@(!option.Disabled ? 0 : null)">
-                    @option.Text
-                </div>
-            }
-            @if (FilterItems().Count == 0)
-            {
-                <div class="select-item select-item-disabled">
-                    <i>
-                        @if (!string.IsNullOrEmpty(filter))
-                        {
-                            @NoResultsMessage
-                        }
-                        else
-                        {
-                            @NoItemsMessage
-                        }
-                    </i>
-                </div>
-            }
+                             @onclick="() => UpdateValue(option)"
+                             @onkeydown="e => UpdateValueByKeydown(e, option)"
+                             @onkeydown:preventDefault="optionPreventDefault"
+                             @onkeydown:stopPropagation="optionStopPropagation"
+                             tabindex="@(!option.Disabled ? 0 : null)">
+                            @option.Text
+                        </div>
+                    }
+                    @if (FilterItems().Count == 0)
+                    {
+                        <div class="select-item select-item-disabled">
+                            <i>
+                                @if (!string.IsNullOrEmpty(filter))
+                                {
+                                    @NoResultsMessage
+                                }
+                                else
+                                {
+                                    @NoItemsMessage
+                                }
+                            </i>
+                        </div>
+                    }
 
+                </div>
+            }
         </div>
-    }
+        <div class="form-group">
+            <div class="validation">
+                @if (Validatable)
+                {
+                    @foreach (var message in ValidationMessages)
+                    {
+                        <span>@message</span>
+                    }
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
-<span>filter @filter @FilterItems()?.Count prevent @optionPreventDefault stop @optionStopPropagation ddprevent @selectPreventDefault ddkey @ddkey opkey @opkey</span>
-
 @code {
-    private bool showItems;
-    private bool shouldClose;
-    private bool selectPreventDefault;
-    private bool optionPreventDefault, optionStopPropagation;
-    private string ddkey, opkey;
-    private string filter = string.Empty;
-    private ElementReference filterInput;
-
     [Parameter] public List<SelectListItem<TValue>> Items { get; set; } = new();
     [Parameter] public TValue Value { get; set; } = default!;
+    [Parameter] public Expression<Func<TValue>> ValueExpression { get; set; }
     [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
     [Parameter] public List<TValue> Values { get; set; } = default!;
+    [Parameter] public Expression<Func<List<TValue>>> ValuesExpression { get; set; }
     [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
+    [Parameter] public bool Validatable { get; set; } = true;
     [Parameter] public bool MultiSelect { get; set; }
     [Parameter] public bool Disabled { get; set; }
-    [Parameter] public bool ShowSearch { get; set; } = true;
+    [Parameter] public bool ShowSearch { get; set; }
     [Parameter] public string Placeholder { get; set; } = string.Empty;
     [Parameter] public string SearchPlaceholder { get; set; } = "Search...";
     [Parameter] public string NoResultsMessage { get; set; } = "No results";
     [Parameter] public string NoItemsMessage { get; set; } = "No items";
+
+    [CascadingParameter] private EditContext CascadedEditContext { get; set; }
+
+    private bool showItems;
+    private bool shouldClose;
+    private bool selectPreventDefault;
+    private bool optionPreventDefault, optionStopPropagation;
+    private string filter = string.Empty;
+    private ElementReference filterInput;
+    private IList<string> ValidationMessages = new List<string>();
+    private FieldIdentifier FieldIdentifier { get; set; }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -119,7 +139,15 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (showItems) await filterInput.FocusAsync();
+        if (showItems && ShowSearch) await filterInput.FocusAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+        if (!MultiSelect)
+            FieldIdentifier = FieldIdentifier.Create(ValueExpression);
+        else
+            FieldIdentifier = FieldIdentifier.Create(ValuesExpression);
     }
 
     void ToggleMenu()
@@ -167,10 +195,8 @@
             UpdateValue(option);
             optionPreventDefault = true;
             optionStopPropagation = true;
-            opkey = "option";
             return;
         }
-        opkey = "";
         optionStopPropagation = false;
         optionPreventDefault = false;
     }
@@ -201,6 +227,7 @@
     void ChangeSingle(TValue value)
     {
         ValueChanged.InvokeAsync(value);
+        Validate();
     }
 
     void ChangeMulti(TValue value)
@@ -217,6 +244,13 @@
             Values.Remove(value);
         }
         ValuesChanged.InvokeAsync(Values);
+        Validate();
+    }
+
+    private void Validate()
+    {
+        CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
+        ValidationMessages = CascadedEditContext.GetValidationMessages(FieldIdentifier).ToArray();
     }
 
     private void OpenMenu(KeyboardEventArgs e)
@@ -225,10 +259,8 @@
         {
             ToggleMenu();
             selectPreventDefault = true;
-            ddkey = "dd";
             return;
         }
-        ddkey = "";
         selectPreventDefault = false;
     }
 

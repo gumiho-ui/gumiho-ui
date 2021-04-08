@@ -53,13 +53,13 @@
             <GRow>
                 <h6>Dropdowns</h6>
                 <GColumn>
-                    <GSelect Items="@dropdownList" @bind-Value="@M.Dropdown" Placeholder="Select value..." ></GSelect>
-                    <span>@M.Dropdown</span>
+                    <GSelect Items="@dropdownList" @bind-Value="@M.Dropdown" ShowSearch="true" Placeholder="Select value..."></GSelect>
+                    <span>selected value: @M.Dropdown</span>
                 </GColumn>
 
                 <GColumn>
-                    <GSelect Items="@dropdownList" @bind-Values="@M.DropdownMulti" MultiSelect="true" Disabled="true"></GSelect>
-                    <span>@System.Text.Json.JsonSerializer.Serialize(M.DropdownMulti)</span>
+                    <GSelect Items="@dropdownList" @bind-Values="@M.DropdownMulti" MultiSelect="true"></GSelect>
+                    <span>selected values: @System.Text.Json.JsonSerializer.Serialize(M.DropdownMulti)</span>
                 </GColumn>
             </GRow>
             <GRow>
@@ -146,6 +146,7 @@
         public bool Indeterminate { get; set; }
         public bool IsIndeterminate { get; set; } = true;
 
+        [DropdownLowerThanFour(ErrorMessage = "Select option with value ≥ 4")]
         public int Dropdown { get; set; }
         public List<int> DropdownMulti { get; set; } = new();
     }
