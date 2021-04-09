@@ -38,7 +38,7 @@
                         <div class="select-search">
                             <input class="select-filter" placeholder="@SearchPlaceholder" type="text"
                                    @onblur="LostFocus" @ref="filterInput"
-                                   @bind-value="filter" @bind-value:event="oninput" />
+                                   @bind-value="filter" @bind-value:event="oninput" tabindex="0" />
                         </div>
                     }
                     @foreach (var option in FilterItems())
@@ -88,29 +88,30 @@
 </div>
 
 @code {
-    [Parameter] public List<SelectListItem<TValue>> Items { get; set; } = new();
-    [Parameter] public TValue Value { get; set; } = default!;
-    [Parameter] public Expression<Func<TValue>> ValueExpression { get; set; }
-    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
-    [Parameter] public List<TValue> Values { get; set; } = default!;
-    [Parameter] public Expression<Func<List<TValue>>> ValuesExpression { get; set; }
-    [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
-    [Parameter] public bool Validatable { get; set; } = true;
-    [Parameter] public bool MultiSelect { get; set; }
-    [Parameter] public bool Disabled { get; set; }
-    [Parameter] public bool ShowSearch { get; set; }
-    [Parameter] public string Placeholder { get; set; } = string.Empty;
-    [Parameter] public string SearchPlaceholder { get; set; } = "Search...";
-    [Parameter] public string NoResultsMessage { get; set; } = "No results";
-    [Parameter] public string NoItemsMessage { get; set; } = "No items";
+        [Parameter] public List<SelectListItem<TValue>> Items { get; set; } = new();
+        [Parameter] public TValue Value { get; set; } = default!;
+        [Parameter] public Expression<Func<TValue>> ValueExpression { get; set; }
+        [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+        [Parameter] public List<TValue> Values { get; set; } = default!;
+        [Parameter] public Expression<Func<List<TValue>>> ValuesExpression { get; set; }
+        [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
+        [Parameter] public bool Validatable { get; set; } = true;
+        [Parameter] public bool MultiSelect { get; set; }
+        [Parameter] public bool Disabled { get; set; }
+        [Parameter] public bool ShowSearch { get; set; }
+        [Parameter] public string Placeholder { get; set; } = string.Empty;
+        [Parameter] public string SearchPlaceholder { get; set; } = "Search...";
+        [Parameter] public string NoResultsMessage { get; set; } = "No results";
+        [Parameter] public string NoItemsMessage { get; set; } = "No items";
 
-    [CascadingParameter] private EditContext CascadedEditContext { get; set; }
+        [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
     private bool showItems;
     private bool shouldClose;
     private bool selectPreventDefault;
     private bool optionPreventDefault, optionStopPropagation;
     private string filter = string.Empty;
+    private bool filterFocus = false;
     private ElementReference filterInput;
     private IList<string> ValidationMessages = new List<string>();
     private FieldIdentifier FieldIdentifier { get; set; }
@@ -139,7 +140,13 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (showItems && ShowSearch) await filterInput.FocusAsync();
+        if (showItems && ShowSearch && !filterFocus)
+        {
+            await filterInput.FocusAsync();
+            filterFocus = true;
+        }
+
+        if (!showItems && filterFocus) filterFocus = false;
     }
 
     protected override void OnInitialized()
@@ -155,6 +162,7 @@
         if (!Disabled)
         {
             showItems = !showItems;
+            filterFocus = false;
         }
     }
 
@@ -190,7 +198,7 @@
 
     void UpdateValueByKeydown(KeyboardEventArgs e, SelectListItem<TValue> option)
     {
-        if (e.Code is "Space" or "Enter")
+        if (e.Code is "Space" or "Enter" or "NumpadEnter")
         {
             UpdateValue(option);
             optionPreventDefault = true;
@@ -255,8 +263,9 @@
 
     private void OpenMenu(KeyboardEventArgs e)
     {
-        if (e.Code is "Space" or "Enter" && !showItems)
+        if ((e.Code is "Space" or "Enter" or "NumpadEnter") && !showItems)
         {
+            Console.WriteLine(e.Code + " " + shouldClose);
             ToggleMenu();
             selectPreventDefault = true;
             return;
@@ -277,6 +286,9 @@
     private void LostFocus(FocusEventArgs focusEventArgs)
     {
         if (shouldClose)
-            ToggleMenu();
+        {
+            showItems = false;
+            filterFocus = false;
+        }
     }
 }
