@@ -1,4 +1,31 @@
-﻿.select-component {
+﻿select {
+    display: none;
+    height: var(--height-form-component);
+    min-width: 175px;
+    border: 1px solid var(--color-gray);
+    border-radius: var(--border-radius-component);
+
+    &:hover:not(:disabled) {
+        cursor: pointer;
+        border: 1px solid var(--color-gray-dark);
+    }
+
+    &:focus:not(:disabled) {
+        outline: none;
+        border: 1px solid var(--color-blue);
+        box-shadow: 0 0 0 1px var(--color-blue-light);
+    }
+
+    &:disabled {
+        background-color: var(--color-disabled-light);
+
+        .select {
+            color: var(--color-disabled-dark);
+        }
+    }
+}
+
+.select-component {
     margin: var(--margin-component);
     display: inline-flex;
     height: 50px;
@@ -103,10 +130,20 @@
             overflow-y: auto;
         }
 
-        .select-item {
+        .select-item-group, .select-item {
             display: block;
             padding: 5px;
 
+            &-disabled {
+                color: var(--color-gray-dark);
+            }
+        }
+
+        .select-item-group {
+            font-weight: 500;
+        }
+
+        .select-item {
             &:hover:not(&-disabled),
             &:focus:not(&-disabled) {
                 background-color: var(--color-gray-light);
@@ -122,9 +159,13 @@
                 background-color: var(--color-primary);
                 color: var(--color-white);
 
-                &:hover {
+                &:hover, &:focus {
                     background-color: var(--color-gray);
                 }
+            }
+
+            &.select-item-has-group {
+                padding-left: 20px;
             }
         }
 

@@ -6,6 +6,12 @@
 
 <div class="select-component">
     <div class="select-component-group">
+        <select multiple="@MultiSelect" @bind="@Value" @bind:event="oninput" @onchange="OnChange" disabled="@Disabled">
+            @foreach (var option in Items)
+            {
+                <option value="@option.Value" disabled="@option.Disabled">@option.Text</option>
+            }
+        </select>
         <div class="select-control @(Disabled ? "disabled" : string.Empty)"
              @onmouseout="MouseLeave"
              @onmouseover="MouseEnter"
@@ -16,11 +22,20 @@
 
             <div class="select" @onclick="ToggleMenu">
                 <div class="select-inner @(showItems ? "open" : string.Empty)">
-                    @if (Items.Where(i => i.Selected).Any())
+                    @if ((MultiSelect && Values.Any()) || !EqualityComparer<TValue>.Default.Equals(Value, default(TValue)))
                     {
-                        <span>
-                            @string.Join(", ", Items.Where(i => i.Selected).Select(i => i.Text))
-                        </span>
+                        @if (MultiSelect)
+                        {
+                            <span>
+                                @string.Join(", ", Items.Where(i => Values.Contains(i.Value)).Select(i => i.Text))
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                @string.Join(", ", Items.Where(i => EqualityComparer<TValue>.Default.Equals(Value, i.Value)).Select(i => i.Text))
+                            </span>
+                        }
                     }
                     else
                     {
@@ -41,11 +56,22 @@
                                    @bind-value="filter" @bind-value:event="oninput" tabindex="0" />
                         </div>
                     }
+                    @{ SelectListGroup? currentGroup = null; }
                     @foreach (var option in FilterItems())
                     {
+                        if (currentGroup != option.Group)
+                        {
+                            currentGroup = option.Group;
+                            if(currentGroup is not null)
+                            {
+                            <div class="select-item-group">@currentGroup.Name</div>
+                            }
+                        }
+
                         <div class="select-item
-                     @(option.Selected ? "select-item-selected" : string.Empty)
-                     @(option.Disabled ? "select-item-disabled" : string.Empty)"
+                            @(currentGroup is not null ? "select-item-has-group" : string.Empty)
+                            @(option.Selected ? "select-item-selected" : string.Empty)
+                            @(option.Disabled ? "select-item-disabled" : string.Empty)"
                              @onclick="() => UpdateValue(option)"
                              @onkeydown="e => UpdateValueByKeydown(e, option)"
                              @onkeydown:preventDefault="optionPreventDefault"
@@ -88,23 +114,23 @@
 </div>
 
 @code {
-        [Parameter] public List<SelectListItem<TValue>> Items { get; set; } = new();
-        [Parameter] public TValue Value { get; set; } = default!;
-        [Parameter] public Expression<Func<TValue>> ValueExpression { get; set; }
-        [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
-        [Parameter] public List<TValue> Values { get; set; } = default!;
-        [Parameter] public Expression<Func<List<TValue>>> ValuesExpression { get; set; }
-        [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
-        [Parameter] public bool Validatable { get; set; } = true;
-        [Parameter] public bool MultiSelect { get; set; }
-        [Parameter] public bool Disabled { get; set; }
-        [Parameter] public bool ShowSearch { get; set; }
-        [Parameter] public string Placeholder { get; set; } = string.Empty;
-        [Parameter] public string SearchPlaceholder { get; set; } = "Search...";
-        [Parameter] public string NoResultsMessage { get; set; } = "No results";
-        [Parameter] public string NoItemsMessage { get; set; } = "No items";
+    [Parameter] public List<SelectListItem<TValue>> Items { get; set; } = new();
+    [Parameter] public TValue Value { get; set; } = default!;
+    [Parameter] public Expression<Func<TValue>> ValueExpression { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public List<TValue> Values { get; set; } = default!;
+    [Parameter] public Expression<Func<List<TValue>>> ValuesExpression { get; set; }
+    [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
+    [Parameter] public bool Validatable { get; set; } = true;
+    [Parameter] public bool MultiSelect { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool ShowSearch { get; set; }
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public string SearchPlaceholder { get; set; } = "Search...";
+    [Parameter] public string NoResultsMessage { get; set; } = "No results";
+    [Parameter] public string NoItemsMessage { get; set; } = "No items";
 
-        [CascadingParameter] private EditContext CascadedEditContext { get; set; }
+    [CascadingParameter] private EditContext CascadedEditContext { get; set; }
 
     private bool showItems;
     private bool shouldClose;
@@ -190,10 +216,12 @@
     {
         var compareInfo = CultureInfo.InvariantCulture.CompareInfo;
 
-        return Items
+        var filteredItems = Items
             .Where(i => compareInfo.IndexOf(i.Text, filter,
                 CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) > -1)
             .ToList();
+
+        return filteredItems;
     }
 
     void UpdateValueByKeydown(KeyboardEventArgs e, SelectListItem<TValue> option)
@@ -265,7 +293,6 @@
     {
         if ((e.Code is "Space" or "Enter" or "NumpadEnter") && !showItems)
         {
-            Console.WriteLine(e.Code + " " + shouldClose);
             ToggleMenu();
             selectPreventDefault = true;
             return;
