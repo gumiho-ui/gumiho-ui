@@ -1,0 +1,327 @@
+﻿@using GumihoUI.Models
+@using System.Globalization
+@using System.Linq.Expressions
+@namespace GumihoUI
+@typeparam TValue
+
+<div class="select-component">
+    <div class="select-component-group">
+        <select multiple="@MultiSelect" @bind="@Value" @bind:event="oninput" @onchange="OnChange" disabled="@Disabled">
+            @foreach (var option in Items)
+            {
+                <option value="@option.Value" disabled="@option.Disabled">@option.Text</option>
+            }
+        </select>
+        <div class="select-control @(Disabled ? "disabled" : string.Empty)"
+             @onmouseout="MouseLeave"
+             @onmouseover="MouseEnter"
+             @onblur="LostFocus"
+             @onkeydown="OpenMenu"
+             @onkeydown:preventDefault="selectPreventDefault"
+             tabindex="@(Disabled ? "-1" :"0")">
+
+            <div class="select" @onclick="ToggleMenu">
+                <div class="select-inner @(showItems ? "open" : string.Empty)">
+                    @if ((MultiSelect && Values.Any()) || !EqualityComparer<TValue>.Default.Equals(Value, default(TValue)))
+                    {
+                        @if (MultiSelect)
+                        {
+                            <span>
+                                @string.Join(", ", Items.Where(i => Values.Contains(i.Value)).Select(i => i.Text))
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                @string.Join(", ", Items.Where(i => EqualityComparer<TValue>.Default.Equals(Value, i.Value)).Select(i => i.Text))
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="select-placeholder">@Placeholder</span>
+                    }
+                    <div class="select-arrow"></div>
+                </div>
+            </div>
+
+            @if (showItems)
+            {
+                <div class="select-items">
+                    @if (ShowSearch)
+                    {
+                        <div class="select-search">
+                            <input class="select-filter" placeholder="@SearchPlaceholder" type="text"
+                                   @onblur="LostFocus" @ref="filterInput"
+                                   @bind-value="filter" @bind-value:event="oninput" tabindex="0" />
+                        </div>
+                    }
+                    @{ SelectListGroup? currentGroup = null; }
+                    @foreach (var option in FilterItems())
+                    {
+                        if (currentGroup != option.Group)
+                        {
+                            currentGroup = option.Group;
+                            if (currentGroup is not null)
+                            {
+                                <div class="select-item-group">@currentGroup.Name</div>
+                            }
+                        }
+
+                        <div class="select-item
+                            @(currentGroup is not null ? "select-item-has-group" : string.Empty)
+                            @(option.Selected ? "select-item-selected" : string.Empty)
+                            @(option.Disabled ? "select-item-disabled" : string.Empty)"
+                             @onblur="LostFocus"
+                             @onclick="() => UpdateValue(option)"
+                             @onkeydown="e => UpdateValueByKeydown(e, option)"
+                             @onkeydown:preventDefault="optionPreventDefault"
+                             @onkeydown:stopPropagation="optionStopPropagation"
+                             tabindex="@(!option.Disabled ? 0 : null)">
+                            @option.Text
+                        </div>
+                    }
+                    @if (FilterItems().Count == 0)
+                    {
+                        <div class="select-item select-item-disabled">
+                            <i>
+                                @if (!string.IsNullOrEmpty(filter))
+                                {
+                                    @NoResultsMessage
+                                }
+                                else
+                                {
+                                    @NoItemsMessage
+                                }
+                            </i>
+                        </div>
+                    }
+
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <div class="validation">
+                @if (Validatable)
+                {
+                    @foreach (var message in ValidationMessages)
+                    {
+                        <span>@message</span>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<SelectListItem<TValue>> Items { get; set; } = new();
+    [Parameter] public TValue Value { get; set; } = default!;
+    [Parameter] public Expression<Func<TValue>> ValueExpression { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public List<TValue> Values { get; set; } = default!;
+    [Parameter] public Expression<Func<List<TValue>>> ValuesExpression { get; set; }
+    [Parameter] public EventCallback<List<TValue>> ValuesChanged { get; set; }
+    [Parameter] public bool Validatable { get; set; } = true;
+    [Parameter] public bool MultiSelect { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool ShowSearch { get; set; }
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public string SearchPlaceholder { get; set; } = "Search...";
+    [Parameter] public string NoResultsMessage { get; set; } = "No results";
+    [Parameter] public string NoItemsMessage { get; set; } = "No items";
+
+    [CascadingParameter] private EditContext CascadedEditContext { get; set; }
+
+    private bool showItems;
+    private bool shouldClose;
+    private bool selectPreventDefault;
+    private bool optionPreventDefault, optionStopPropagation;
+    private string filter = string.Empty;
+    private bool filterFocus = false;
+    private ElementReference filterInput;
+    private IList<string> ValidationMessages = new List<string>();
+    private FieldIdentifier FieldIdentifier { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (Items.Count == 0 || !Items.Where(i => i.Selected).Any())
+                return;
+
+            if (!MultiSelect)
+            {
+                this.Value = Items.Where(i => i.Selected).First().Value;
+                ChangeSingle(this.Value);
+            }
+            else
+            {
+                foreach (var item in Items.Where(i => i.Selected))
+                {
+                    ChangeMulti(item.Value);
+                }
+            }
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (showItems && ShowSearch && !filterFocus)
+        {
+            await filterInput.FocusAsync();
+            filterFocus = true;
+        }
+
+        if (!showItems && filterFocus) filterFocus = false;
+    }
+
+    protected override void OnInitialized()
+    {
+        if (!MultiSelect)
+            FieldIdentifier = FieldIdentifier.Create(ValueExpression);
+        else
+            FieldIdentifier = FieldIdentifier.Create(ValuesExpression);
+    }
+
+    void ToggleMenu()
+    {
+        if (!Disabled)
+        {
+            showItems = !showItems;
+            filterFocus = false;
+        }
+    }
+
+
+    void OnChange(ChangeEventArgs e)
+    {
+        var value = (TValue)Convert.ChangeType(e.Value, typeof(TValue));
+
+        if (value is null)
+        {
+            return;
+        }
+
+        if (!MultiSelect)
+        {
+            ChangeSingle(value);
+        }
+        else
+        {
+            ChangeMulti(value);
+        }
+    }
+
+    List<SelectListItem<TValue>> FilterItems()
+    {
+        var compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+
+        var filteredItems = Items
+            .Where(i => compareInfo.IndexOf(i.Text, filter,
+                CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) > -1)
+            .ToList();
+
+        return filteredItems;
+    }
+
+    void UpdateValueByKeydown(KeyboardEventArgs e, SelectListItem<TValue> option)
+    {
+        if (e.Code is "Space" or "Enter" or "NumpadEnter")
+        {
+            UpdateValue(option);
+            optionPreventDefault = true;
+            optionStopPropagation = true;
+            return;
+        }
+        else if(e.Code is "Escape")
+        {
+            showItems = false;
+            filterFocus = false;
+        }
+        optionStopPropagation = false;
+        optionPreventDefault = false;
+    }
+
+    void UpdateValue(SelectListItem<TValue> option)
+    {
+        if (option.Disabled)
+            return;
+
+        if (!MultiSelect)
+        {
+            foreach (var item in Items.Where(i => i.Selected))
+            {
+                item.Selected = false;
+            }
+
+            ChangeSingle(option.Value);
+            ToggleMenu();
+        }
+        else
+        {
+            ChangeMulti(option.Value);
+        }
+
+        option.Selected = !option.Selected;
+    }
+
+    void ChangeSingle(TValue value)
+    {
+        ValueChanged.InvokeAsync(value);
+        Validate();
+    }
+
+    void ChangeMulti(TValue value)
+    {
+        if (Values is null)
+            Values = new();
+
+        if (!Values.Contains(value))
+        {
+            Values.Add(value);
+        }
+        else
+        {
+            Values.Remove(value);
+        }
+        ValuesChanged.InvokeAsync(Values);
+        Validate();
+    }
+
+    private void Validate()
+    {
+        CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
+        ValidationMessages = CascadedEditContext.GetValidationMessages(FieldIdentifier).ToArray();
+    }
+
+    private void OpenMenu(KeyboardEventArgs e)
+    {
+        if ((e.Code is "Space" or "Enter" or "NumpadEnter") && !showItems)
+        {
+            ToggleMenu();
+            selectPreventDefault = true;
+            return;
+        }
+        selectPreventDefault = false;
+    }
+
+    private void MouseLeave()
+    {
+        shouldClose = true;
+    }
+
+    private void MouseEnter()
+    {
+        shouldClose = false;
+    }
+
+    private void LostFocus(FocusEventArgs focusEventArgs)
+    {
+        if (shouldClose)
+        {
+            showItems = false;
+            filterFocus = false;
+        }
+    }
+}
