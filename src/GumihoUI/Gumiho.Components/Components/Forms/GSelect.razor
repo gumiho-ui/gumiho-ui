@@ -62,9 +62,9 @@
                         if (currentGroup != option.Group)
                         {
                             currentGroup = option.Group;
-                            if(currentGroup is not null)
+                            if (currentGroup is not null)
                             {
-                            <div class="select-item-group">@currentGroup.Name</div>
+                                <div class="select-item-group">@currentGroup.Name</div>
                             }
                         }
 
@@ -72,6 +72,7 @@
                             @(currentGroup is not null ? "select-item-has-group" : string.Empty)
                             @(option.Selected ? "select-item-selected" : string.Empty)
                             @(option.Disabled ? "select-item-disabled" : string.Empty)"
+                             @onblur="LostFocus"
                              @onclick="() => UpdateValue(option)"
                              @onkeydown="e => UpdateValueByKeydown(e, option)"
                              @onkeydown:preventDefault="optionPreventDefault"
@@ -232,6 +233,11 @@
             optionPreventDefault = true;
             optionStopPropagation = true;
             return;
+        }
+        else if(e.Code is "Escape")
+        {
+            showItems = false;
+            filterFocus = false;
         }
         optionStopPropagation = false;
         optionPreventDefault = false;

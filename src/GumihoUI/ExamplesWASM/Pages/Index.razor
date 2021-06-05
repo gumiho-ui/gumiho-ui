@@ -51,15 +51,17 @@
                 </GColumn>
             </GRow>
             <GRow>
-                <h6>Dropdowns</h6>
+                <h5>Dropdowns</h5>
                 <GColumn>
-                    <GSelect Items="@dropdownList" @bind-Value="@M.Dropdown" ShowSearch="true" Placeholder="Select value..."></GSelect>
-                    <span>selected value: @M.Dropdown</span>
+                    <h6>Single select</h6>
+                    <GSelect Items="@selectList" @bind-Value="@M.Select" ShowSearch="true" Placeholder="Select value..."></GSelect>
+                    <span>selected value: @M.Select</span>
                 </GColumn>
 
                 <GColumn>
-                    <GSelect Items="@dropdownMultiList" @bind-Values="@M.DropdownMulti" MultiSelect="true"></GSelect>
-                    <span>selected values: @System.Text.Json.JsonSerializer.Serialize(M.DropdownMulti)</span>
+                    <h6>Multi select</h6>
+                    <GSelect Items="@selectMultiList" @bind-Values="@M.SelectMulti" MultiSelect="true"></GSelect>
+                    <span>selected values: @System.Text.Json.JsonSerializer.Serialize(M.SelectMulti)</span>
                 </GColumn>
             </GRow>
             <GRow>
@@ -146,15 +148,15 @@
         public bool Indeterminate { get; set; }
         public bool IsIndeterminate { get; set; } = true;
 
-        [DropdownLowerThanFour(ErrorMessage = "Select option with value ≥ 4")]
-        public int Dropdown { get; set; }
-        public List<int> DropdownMulti { get; set; } = new();
+        [SelectLowerThanFour(ErrorMessage = "Select option with value ≥ 4")]
+        public int Select { get; set; }
+        public List<int> SelectMulti { get; set; } = new();
     }
 
     private static SelectListGroup basicSelectListGroup = new() { Name = "Basic colors" };
     private static SelectListGroup otherSelectListGroup = new() { Name = "Other group" };
 
-    public List<SelectListItem<int>> dropdownList = new()
+    public List<SelectListItem<int>> selectList = new()
     {
         new() { Value = 1, Text = "Red", Group = basicSelectListGroup },
         new() { Value = 2, Text = "Green", Group = basicSelectListGroup },
@@ -164,7 +166,7 @@
         new() { Value = 6, Text = "White", Group = otherSelectListGroup }
     };
 
-    public List<SelectListItem<int>> dropdownMultiList = new()
+    public List<SelectListItem<int>> selectMultiList = new()
     {
         new() { Value = 1, Text = "Red", Group = basicSelectListGroup },
         new() { Value = 2, Text = "Green", Group = basicSelectListGroup },
