@@ -25,7 +25,7 @@ jobs:
         run: npm i -g sass
         
       - name: Run sass
-        run: sass src/GumihoUI/Gumiho.Components/sass/main.scss src/GumihoUI/Gumiho.Components/wwwroot/main.min.css
+        run: sass src/GumihoUI/Gumiho.Components/sass/main.scss src/GumihoUI/Gumiho.Components/wwwroot/main.min.css -s compressed
           
       - name: Publish ExamplesWASM Project
         run: dotnet publish src/GumihoUI/ExamplesWASM/ExamplesWASM.csproj -c Release -o release --nologo /p:EnvironmentName=Development
