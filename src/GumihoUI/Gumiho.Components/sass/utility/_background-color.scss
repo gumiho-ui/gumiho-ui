@@ -1,0 +1,16 @@
+﻿$colors: (blue: white, red: white, orange: white, green: white, gray: black, white: black);
+$color-modifiers: '', '-light', '-dark';
+
+@each $color, $font-color in $colors {
+    @each $color-modifier in $color-modifiers {
+        .background-color--#{"" + $color} {
+            background-color: var(--color-#{$color}#{$color-modifier});
+            color: var(--color-#{$font-color});
+        }
+    }
+}
+
+.background-color--black {
+    background-color: var(--color-black);
+    color: var(--color-white);
+}

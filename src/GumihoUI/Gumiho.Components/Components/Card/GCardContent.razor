@@ -1,0 +1,24 @@
+﻿@namespace GumihoUI
+
+<div class="card-content @cssClasses">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public string? BackgroundColor { get; set; }
+    [Parameter] public string CssClass { get; set; } = string.Empty;
+    [Parameter] public bool RemoveMargins { get; set; }
+    [Parameter] public string HorizontalAlign { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string? cssClasses { get; set; }
+
+    protected override void OnInitialized()
+    {
+        cssClasses = CssClass;
+        cssClasses += !string.IsNullOrEmpty(BackgroundColor)
+                        ? $" card-background background-color--{BackgroundColor}" : RemoveMargins ? string.Empty : " card-no-background";
+        cssClasses += RemoveMargins ? " no-margins" : string.Empty;
+        cssClasses += $" {HorizontalAlign}";
+    }
+}
