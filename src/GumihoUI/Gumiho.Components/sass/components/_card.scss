@@ -1,0 +1,30 @@
+﻿.card-component {
+    border: 1px solid var(--color-gray);
+    border-radius: var(--border-radius-component);
+    margin: var(--margin-component);
+    overflow: hidden;
+
+    .card-content {
+        &.card-background {
+            padding: var(--padding-component-large);
+        }
+
+        &.card-no-background {
+            margin: var(--padding-component-large);
+
+            &::after {
+                content: '';
+                display: block;
+                margin-bottom: var(--padding-component-large);
+            }
+        }
+
+        &.no-margins {
+            margin: 0;
+        }
+    }
+
+    > div.card-no-background:not(:last-child) {
+        border-bottom: 1px solid var(--color-gray);
+    }
+}
