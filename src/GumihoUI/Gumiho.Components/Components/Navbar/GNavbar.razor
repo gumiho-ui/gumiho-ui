@@ -1,0 +1,33 @@
+﻿@namespace GumihoUI
+
+<nav class="navbar-component @cssClasses">
+    <div class="navbar-content">
+        <CascadingValue Value="this">
+            @ChildContent
+        </CascadingValue>
+    </div>
+</nav>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public GNavItem? ActiveNavItem { get; set; } = null;
+    [Parameter] public bool Sticky { get; set; }
+    [Parameter] public bool FullWidth { get; set; }
+    [Parameter] public string CssClass { get; set; } = string.Empty;
+
+    private string cssClasses { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        cssClasses = CssClass;
+        cssClasses += Sticky ? " sticky" : string.Empty;
+        cssClasses += FullWidth ? " full-width" : string.Empty;
+    }
+
+    public void SetActiveItem(GNavItem navItem)
+    {
+        ActiveNavItem?.ChangeActiveState(false);
+        navItem.ChangeActiveState(true);
+        ActiveNavItem = navItem;
+    }
+}

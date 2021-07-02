@@ -1,0 +1,20 @@
+﻿@namespace GumihoUI
+
+<div class="navbar-logo @CssClass">
+    @if (!string.IsNullOrEmpty(Url))
+    {
+        <a href="@Url">
+            @ChildContent
+        </a>
+    }
+    else
+    {
+        @ChildContent
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string CssClass { get; set; } = string.Empty;
+    [Parameter] public string? Url { get; set; }
+}

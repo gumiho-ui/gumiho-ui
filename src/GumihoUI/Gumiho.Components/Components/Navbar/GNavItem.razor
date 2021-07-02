@@ -1,0 +1,50 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@namespace GumihoUI
+
+
+<div class="navbar-item @cssClasses @cssActive" @onclick="Navigate">
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter] public GNavbar Navbar { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string CssClass { get; set; } = string.Empty;
+    [Parameter] public string? Url { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+
+    private string cssClasses { get; set; } = string.Empty;
+    private string cssActive { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        cssClasses = CssClass;
+        cssClasses += Disabled ? " disabled" : string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(Url) && NavigationManager.ToAbsoluteUri(Url).ToString() == NavigationManager.Uri)
+            Navbar.SetActiveItem(this);
+    }
+
+    private async Task Navigate()
+    {
+        if (string.IsNullOrWhiteSpace(Url))
+            return;
+
+        var isElement = Url.Substring(0, 1) == "#";
+
+        if (isElement)
+            await JSRuntime.InvokeVoidAsync("scrollToElement", Url!.Substring(1));
+        else
+            NavigationManager.NavigateTo(Url);
+
+        Navbar.SetActiveItem(this);
+    }
+
+    public void ChangeActiveState(bool state)
+    {
+        cssActive = state ? " active" : string.Empty;
+        StateHasChanged();
+    }
+}
