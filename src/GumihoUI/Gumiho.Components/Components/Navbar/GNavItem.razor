@@ -29,7 +29,7 @@
 
     private async Task Navigate()
     {
-        if (string.IsNullOrWhiteSpace(Url))
+        if (Disabled || string.IsNullOrWhiteSpace(Url))
             return;
 
         var isElement = Url.Substring(0, 1) == "#";

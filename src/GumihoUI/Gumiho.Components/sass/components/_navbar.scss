@@ -45,19 +45,44 @@
         }
     }
 
+    .navbar-item-group {
+        height:100%;
+
+        &.position {
+            &-left {
+                margin-right: auto;
+            }
+
+            &-center {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            &-right {
+                margin-left: auto;
+            }
+        }
+    }
+
     .navbar-item {
         font-size: 1.25rem;
         height: 100%;
-        padding: 0.725rem 1rem;
         cursor: pointer;
-        display: inline-block;
+        display: flex;
+        align-items: center;
+        padding-inline: 1rem;
 
-        &:hover {
+        &:not(.disabled):hover {
             background-color: var(--color-blue-light);
         }
 
         &.active {
             background-color: var(--color-blue-dark);
+        }
+
+        &.disabled {
+            cursor: default;
+            color: var(--color-gray-light);
         }
     }
 }

@@ -5,9 +5,11 @@
     <GNavbar Sticky="true">
         <GNavLogo Url="./">Gumiho UI</GNavLogo>
         <GNavItem Url="./">Home</GNavItem>
-        <GNavItem Url="./#forms">Forms</GNavItem>
-        <GNavItem Url="#buttons">Buttons</GNavItem>
-        <GNavItem Url="/typography">Typography</GNavItem>
+        <GNavItem Url="#forms">Forms</GNavItem>
+        <GNavItem Url="#buttons" Disabled="true">Buttons</GNavItem>
+        <GNavItemGroup Position="@Position.Right">
+            <GNavItem Url="/typography">Typography</GNavItem>
+        </GNavItemGroup>
     </GNavbar>
 
     @Body
